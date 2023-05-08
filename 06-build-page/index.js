@@ -12,7 +12,7 @@ fs.mkdir(distDir, { recursive: true })
     return fs.readFile(path.join(__dirname, 'template.html'), 'utf-8');
   })
   .then((template) => {
-    
+
     const componentNames = template.match(/{{\w+}}/g);
     let resultHtml = template;
     const readComponent = async (componentName) => {
@@ -27,11 +27,11 @@ fs.mkdir(distDir, { recursive: true })
     return readComponents();
   })
   .then((resultHtml) => {
-    
+
     return fs.writeFile(path.join(distDir, 'index.html'), resultHtml);
   })
   .then(() => {
-    
+
     return fs.readdir(stylesDir);
   })
   .then((styleFiles) => {
