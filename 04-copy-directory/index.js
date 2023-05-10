@@ -20,6 +20,16 @@ async function copyDirectory() {
     return;
   }
 
+  try {
+    const destFiles = await fs.readdir(destDir);
+    for (let file of destFiles) {
+      await fs.unlink(path.join(destDir, file));
+    }
+  } catch (err) {
+    console.error(`Error removing files from destination directory: ${err}`);
+    return;
+  }
+
   for (let file of files) {
     const srcPath = path.join(sourceDir, file);
     const destPath = path.join(destDir, file);
@@ -38,34 +48,6 @@ async function copyDirectory() {
   }
 
   console.log('Copy successful!');
-}
-
-async function copyDirectoryRecursive(srcDir, destDir) {
-  try {
-    await fs.mkdir(destDir, { recursive: true });
-  } catch (err) {
-    console.error(`Error creating directory ${destDir}: ${err}`);
-    return;
-  }
-
-  const files = await fs.readdir(srcDir);
-
-  for (let file of files) {
-    const srcPath = path.join(srcDir, file);
-    const destPath = path.join(destDir, file);
-
-    try {
-      const stats = await fs.stat(srcPath);
-      if (stats.isDirectory()) {
-        await copyDirectoryRecursive(srcPath, destPath);
-      } else {
-        await fs.copyFile(srcPath, destPath);
-      }
-    } catch (err) {
-      console.error(`Error copying file ${file}: ${err}`);
-      return;
-    }
-  }
 }
 
 copyDirectory();
